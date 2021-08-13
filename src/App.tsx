@@ -1,56 +1,50 @@
 import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import { useAppDispatch } from './app/hooks';
+import { loginAsync } from './features/auth/authSlice';
+import { useLoginMutation } from './features/rtk-auth/RtkAuthSlice';
 
 function App() {
+  // CreateAsyncThunkにはdispatchが必要
+  const dispatch = useAppDispatch();
+
+  // RTK Queryはカスタムフックが生成される
+  const [login] = useLoginMutation();
+
+  // CreateAsyncThunk
+  const loginHandler = async () => {
+    dispatch(
+      loginAsync({
+        userName: 'john',
+        password: 'pass1234',
+      }),
+    );
+  };
+
+  // RTKQuery
+  const rtkLoginHandler = async () => {
+    const data = {
+      userName: 'john',
+      password: 'pass1234',
+    };
+    try {
+      const response = await login(data).unwrap();
+    } catch (error) {
+      alert(error);
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+      <div>
+        <button type="button" onClick={loginHandler}>
+          CreateAsyncThunk LOGIN
+        </button>
+      </div>
+      <div>
+        <button type="button" onClick={rtkLoginHandler}>
+          RTK LOGIN
+        </button>
+      </div>
     </div>
   );
 }
