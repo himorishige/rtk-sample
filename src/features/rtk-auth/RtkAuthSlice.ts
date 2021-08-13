@@ -23,7 +23,6 @@ const initialState: AuthState = {
 
 export const authApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: '/' }),
-  reducerPath: 'authApi',
   endpoints: (builder) => ({
     login: builder.mutation<UserState, LoginForm>({
       query: (credentials) => ({
