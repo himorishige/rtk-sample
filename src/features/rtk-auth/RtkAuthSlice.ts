@@ -13,12 +13,14 @@ interface UserState {
 
 export interface AuthState {
   user: UserState | undefined;
-  status: 'idle' | 'loading' | 'failed';
+  // ローディング状態はRTK Queryのカスタムフックで管理
+  // status: 'idle' | 'loading' | 'failed';
 }
 
 const initialState: AuthState = {
   user: undefined,
-  status: 'idle',
+  // ローディング状態はRTK Queryのカスタムフックで管理
+  // status: 'idle',
 };
 
 export const authApi = createApi({
@@ -43,19 +45,22 @@ export const rtkAuthSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // createAsyncThunkと違いaddMatcherで成功失敗の状態を取得可能です。
-      .addMatcher(authApi.endpoints.login.matchPending, (state) => {
-        state.status = 'loading';
-      })
+      /** RTK Queryのカスタムフックでローディングステータスを取得できるので、
+       * 下記のようなローディング状態の取得のためだけの利用であれば不要だと思います。
+       */
+      // .addMatcher(authApi.endpoints.login.matchPending, (state) => {
+      //   state.status = 'loading';
+      // })
       .addMatcher(
         authApi.endpoints.login.matchFulfilled,
         (state, action: PayloadAction<UserState>) => {
-          state.status = 'idle';
+          // state.status = 'idle';
           state.user = action.payload;
         },
-      )
-      .addMatcher(authApi.endpoints.login.matchRejected, (state) => {
-        state.status = 'idle';
-      });
+      );
+    // .addMatcher(authApi.endpoints.login.matchRejected, (state) => {
+    //   state.status = 'idle';
+    // });
   },
 });
 

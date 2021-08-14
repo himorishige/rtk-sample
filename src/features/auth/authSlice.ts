@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../../app/store';
 import axios, { AxiosRequestConfig } from 'axios';
 
 interface LoginForm {
@@ -62,5 +63,7 @@ export const authSlice = createSlice({
       });
   },
 });
+
+export const selectLoadingStatus = (state: RootState) => state.auth.status;
 
 export default authSlice.reducer;
